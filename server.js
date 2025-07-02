@@ -1,15 +1,15 @@
-const { PeerServer } = require('peer');
 const express = require('express');
+const { ExpressPeerServer } = require('peer');
 const app = express();
 
-const PORT = process.env.PORT || 3001;
-
-const peerServer = PeerServer({
-  port: PORT,
-  path: '/',
-  proxied: true,
+const server = require('http').createServer(app);
+const peerServer = ExpressPeerServer(server, {
+  debug: true,
+  path: '/' // important: not /peerjs here
 });
 
-app.use('/', peerServer);
+app.use('/peerjs', peerServer); // mount at /peerjs route
 
-console.log(`✅ PeerJS Server running on port ${PORT}`);
+server.listen(10000, () => {
+  console.log('✅ PeerJS Server running on port 10000');
+});
